@@ -1,0 +1,35 @@
+{
+    "name": "gradius",
+    "version": "1.0.0",
+    "description": "A single page application website hosting tradingview chart with datafeed from CoinMarketCap (CMC)",
+    "repository": {
+        "type": "git",
+        "url": "git+https://bitbucket.org/kriptomaksima/gradius.git"
+    },
+    "devDependencies": {
+        "@rollup/plugin-node-resolve": "^16.0.1",
+        "@rollup/plugin-replace": "^6.0.2",
+        "@rollup/plugin-terser": "^0.4.4",
+        "@rollup/plugin-url": "^8.0.2",
+        "postcss-url": "^10.1.3",
+        "rollup": "^4.46.2",
+        "rollup-plugin-livereload": "^2.0.5",
+        "rollup-plugin-postcss": "^4.0.2",
+        "rollup-plugin-serve": "^3.0.0"
+    },
+    "dependencies": {
+        "lightweight-charts": "^5.0.8"
+    },
+    "scripts": {
+        "dev": "rollup -c -w",
+        "build": "rollup -c"
+    },
+    "main": "coin_detail.js",
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://bitbucket.org/kriptomaksima/gradius/issues"
+    },
+    "homepage": "https://bitbucket.org/kriptomaksima/gradius#readme"
+}

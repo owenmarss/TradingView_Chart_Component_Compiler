@@ -1,0 +1,353 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Floq</title>
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+
+            html {
+                font-size: clamp(0.35px, calc(100vw / 1080), 1px);
+                position: relative;
+            }
+
+            html.landscape {
+                font-size: clamp(0.35px, calc(100vh / 1080), 1px);
+            }
+
+            html.landscape #coin-detail {
+                position: absolute;
+                top: 0px;
+                left: 0px;
+                width: fit-content;
+                height: fit-content;
+                display: flex;
+                flex-direction: column;
+                gap: 14rem;
+                z-index: 10;
+                transform: translateX(60rem) translateY(40rem);
+                background-color: #ffffff;
+                /* If landscape */
+                box-shadow:
+                    0 10px 15px -3px rgb(0 0 0 / 0.1),
+                    0 4px 6px -4px rgb(0 0 0 / 0.1);
+                padding: 14px 28px 28px 20px;
+                filter: drop-shadow(0 9px 7px rgb(0 0 0 / 0.1));
+                border: 1px solid rgba(0, 0, 0, 0.1);
+                border-radius: 16px;
+            }
+
+            :root {
+                --safe-top: env(safe-area-inset-top, 0px);
+                --safe-right: env(safe-area-inset-right, 0px);
+                --safe-bottom: env(safe-area-inset-bottom, 0px);
+                --safe-left: env(safe-area-inset-left, 0px);
+            }
+
+            html,
+            body,
+            #chart-container {
+                width: 100%;
+                height: 100%;
+                min-height: 100%;
+            }
+
+            body {
+                margin: 0;
+                padding: 0;
+                overflow: auto;
+                -webkit-text-size-adjust: 100%;
+            }
+
+            #chart-container {
+                position: relative;
+            }
+
+            #coin-detail {
+                position: absolute;
+                top: 0px;
+                left: 0px;
+                width: fit-content;
+                height: fit-content;
+                display: flex;
+                flex-direction: column;
+                gap: 14rem;
+                z-index: 10;
+                transform: translateX(60rem) translateY(40rem);
+                background-color: transparent;
+            }
+
+            #coin-detail-top {
+                width: fit-content;
+                display: flex;
+                align-items: center;
+                gap: 16rem;
+            }
+
+            #coin-detail-bottom {
+                width: fit-content;
+                text-align: center;
+                display: flex;
+                flex-direction: column;
+                gap: 12rem;
+                margin-left: 1rem;
+            }
+
+            /* Font Size */
+            .coin-detail-name {
+                font-size: 56rem;
+                font-weight: 600;
+                color: #002731;
+                font-family: "Darker Grotesque SemiBold", sans-serif;
+            }
+
+            .coin-detail-symbol {
+                font-size: 34rem;
+                font-weight: 500;
+                color: #35555f;
+                font-family: "Darker Grotesque Medium", sans-serif;
+                transform: translateY(6rem);
+            }
+
+            .coin-detail-separator {
+                /* margin-top: 7rem; */
+                transform: translateY(8rem);
+                font-size: 18rem;
+                color: #35555f;
+                font-family: "Darker Grotesque Medium", sans-serif;
+            }
+
+            .coin-detail-price-container {
+                display: flex;
+                align-items: center;
+            }
+
+            .coin-detail-price-1 {
+                font-size: 68rem;
+                font-family: "Sora", sans-serif;
+                font-weight: 600;
+                color: #002731;
+            }
+
+            .coin-detail-price-2 {
+                font-size: 44rem;
+                font-family: "Sora", sans-serif;
+                font-weight: 600;
+                color: #002731;
+                transform: translateY(6rem);
+            }
+
+            .coin-detail-change-container {
+                align-items: center;
+                display: flex;
+            }
+
+            .coin-detail-change-symbol {
+                font-family: "Material Symbols Outlined";
+                font-weight: normal;
+                font-style: normal;
+                font-size: 42rem;
+                line-height: 1;
+                letter-spacing: normal;
+                text-transform: none;
+                display: none;
+                max-width: 30px;
+                white-space: nowrap;
+                word-wrap: normal;
+                direction: ltr;
+                -webkit-font-smoothing: antialiased;
+            }
+
+            .coin-detail-change-symbol-container {
+                margin-top: 1rem;
+            }
+
+            .coin-detail-change-value {
+                font-size: 44rem;
+                font-family: "Sora", sans-serif;
+                font-weight: 400;
+                margin-left: 16rem;
+                /* margin-right: 1rem; */
+            }
+
+            .coin-detail-change-percentage {
+                font-size: 44rem;
+                font-family: "Sora", sans-serif;
+                font-weight: 400;
+                margin-left: 12rem;
+            }
+
+            .arrow-down {
+                transform: rotate(90deg);
+            }
+
+            /* Image CSS */
+            #coin-detail-image-container {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: fit-content;
+                transform: translateY(4rem);
+            }
+
+            #coin-detail-image-container img {
+                width: 60rem;
+                height: 60rem;
+            }
+
+            #coin-detail-name-container {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 12rem;
+            }
+
+            .chart-bottom {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                /* border: 1px solid #000000; */
+                padding-inline: 36rem;
+                height: 10dvh;
+            }
+
+            .chart-bottom .info {
+                font-size: 32rem;
+                font-family: "Darker Grotesque Medium", sans-serif;
+                font-weight: 500;
+                color: #9aaaaf;
+                letter-spacing: 0.12rem;
+            }
+
+            .chart-bottom-buttons {
+                display: flex;
+                align-items: center;
+                gap: 72rem;
+            }
+
+            .chart-mode-selector {
+                display: flex;
+                align-items: center;
+                gap: 20rem;
+                /* border: 1px solid black; */
+            }
+
+            .chart-mode-selector .mode-btn {
+                width: 42rem;
+                height: 42rem;
+                opacity: 0.45;
+                cursor: pointer;
+                transition: opacity 0.15s ease;
+            }
+
+            .chart-mode-selector .mode-btn.active {
+                opacity: 1;
+            }
+
+            .chart-size-mode .expand {
+                width: 44rem;
+                height: 44rem;
+            }
+
+            .non-interactive-img {
+                pointer-events: none;
+                -webkit-touch-callout: none; /* iOS long-press */
+                -webkit-user-select: none;
+                user-select: none;
+            }
+        </style>
+    </head>
+
+    <body>
+        <!-- WATERMARK -->
+        <!-- Chart Container which would be parent for the absolute coin detail -->
+        <div id="chart-container"></div>
+        <div id="coin-detail">
+            <div id="coin-detail-top">
+                <div id="coin-detail-image-container">
+                    <img
+                        class="coin-detail-image non-interactive-img"
+                        oncontextmenu="return false;"
+                    />
+                </div>
+
+                <div id="coin-detail-name-container">
+                    <h3 class="coin-detail-name"></h3>
+                    <div class="coin-detail-separator">●</div>
+                    <p class="coin-detail-symbol"></p>
+                </div>
+            </div>
+
+            <div id="coin-detail-bottom">
+                <div class="coin-detail-price-container">
+                    <h1 class="coin-detail-price-1"></h1>
+                    <h1 class="coin-detail-price-2"></h1>
+                </div>
+
+                <div class="coin-detail-change-container">
+                    <!-- Change Symbol -->
+                    <div class="coin-detail-change-symbol-container">
+                        <div class="coin-detail-change-symbol arrow-down">
+                            arrow_outward
+                        </div>
+                        <div class="coin-detail-change-symbol arrow-up">
+                            arrow_outward
+                        </div>
+                    </div>
+
+                    <!-- Change Value -->
+                    <div class="coin-detail-change-value"></div>
+
+                    <!-- Change Percentage -->
+                    <div class="coin-detail-change-percentage-container">
+                        <!-- Change Percentage -->
+                        <div class="coin-detail-change-percentage"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Include the coin detail script -->
+        <script src="ohlc.js"></script>
+        <script src="coin_detail.js"></script>
+
+        <div class="chart-bottom">
+            <h1 class="info">Tap and hold the chart to see exact values.</h1>
+
+            <div class="chart-bottom-buttons">
+                <div class="chart-mode-selector" id="chart-mode-selector">
+                    <img
+                        src="/public/icons/area-icon-inactive.png"
+                        data-type="area"
+                        alt=""
+                        class="mode-btn"
+                    />
+
+                    <img
+                        src="/public/icons/candlestick-icon-inactive.png"
+                        data-type="candlestick"
+                        alt=""
+                        class="mode-btn"
+                    />
+
+                    <img
+                        src="/public/icons/bar-icon-inactive.png"
+                        data-type="bar"
+                        alt=""
+                        class="mode-btn"
+                    />
+                </div>
+
+                <div class="chart-size-mode">
+                    <img src="/public/icons/expand.png" alt="" class="expand" />
+                </div>
+            </div>
+        </div>
+    <script src="bundle.js"></script>
+</body>
+</html>
